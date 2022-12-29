@@ -3,7 +3,8 @@ import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
 
-const coursedata = require('./request_major.js');
+import { getdata } from './request_major';
+// const coursedata = require('./request_major.js');
 
 
 function App() {
@@ -21,25 +22,27 @@ function App() {
       });
     }; 
 
-    // case where the user inputs nothing
-    const inputEmpty = () => {
-      return formState.term === "" || formState.department === "";
-    };
+    //const data = getdata.buildcombinedJSON(formState.term, formState.department);
+    //console.log(getdata.buildcombinedJSON("WI23", "HUM"));
+    // // case where the user inputs nothing
+    // const inputEmpty = () => {
+    //   return formState.term === "" || formState.department === "";
+    // };
 
     
-    // add the json to DB 
-    const add_to_database = async () =>{
-      if (inputEmpty()) {
-        window.alert("The input is empty");
-      }
-      else {
-        try {
-          // add everything to data base 
-        } catch (e) {
+    // // add the json to DB 
+    // const add_to_database = async () =>{
+    //   if (inputEmpty()) {
+    //     window.alert("The input is empty");
+    //   }
+    //   else {
+    //     try {
+    //       // add everything to data base 
+    //     } catch (e) {
           
-        }
-      }
-    }
+    //     }
+    //   }
+    // }
 }
 
 export default App;

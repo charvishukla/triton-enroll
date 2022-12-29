@@ -26,7 +26,7 @@ let fetchfrom = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent
  * 
  * Returns the first page of schedule for a given term and department 
  */
-async function pg1_req(term, dep) {
+export async function pg1_req(term, dep) {
     const data = {
         'selectedTerm': term,
         'selectedSubjects': dep, 
@@ -69,7 +69,7 @@ async function pg1_req(term, dep) {
  * - gets responses for all the pages related to a given department
  * - saves all these responses in an array
  */
-async function allpgs_req(term, dep) {
+export async function allpgs_req(term, dep) {
     // check if there are multiple pages 
     const pg1 = await pg1_req(term, dep);
     let dom = new JSDOM(pg1);
@@ -129,7 +129,7 @@ async function allpgs_req(term, dep) {
  * @param {*} dep 
  * @returns 
  */
-async function buildcombinedJSON(term, dep){
+export async function buildcombinedJSON(term, dep){
     const pg1 = await pg1_req(term, dep); // html
     let first_page = parse.parseHtml(pg1); // parse 
 
@@ -154,8 +154,8 @@ async function buildcombinedJSON(term, dep){
 buildcombinedJSON("WI22", "CSE");
 
 
-module.exports = {
-    buildcombinedJSON: buildcombinedJSON, 
-    allpgs_req: allpgs_req, 
-    pg1_req: pg1_req
-}
+// module.exports = {
+//     buildcombinedJSON: buildcombinedJSON, 
+//     allpgs_req: allpgs_req, 
+//     pg1_req: pg1_req
+// }
