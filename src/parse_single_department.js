@@ -4,7 +4,9 @@ const { JSDOM } = jsdom;
 // - - - - - - - - - - HTMLs -> JSON - - - - - - - - - -
 
 function headerAndSectionToJSON(headers, sections) {
-    return headers.map((h, i) => ({ ...h, sections: sections[i] }));
+    let result = headers.map((h, i) => ({ ...h, sections: sections[i] }));
+
+    return result
 }
 
 function getTable(html) {
@@ -14,7 +16,7 @@ function getTable(html) {
 
 function headerAndSectionFromHtml(html) {
     const table = getTable(html);
-    return [getHeader(table), getSection(table)];
+    return [getHeader(table), getSections(table)];
 }
 
 function parseHtml(html) {
@@ -41,13 +43,7 @@ function getDepartmentName(table) {
 // predicate to see if a tr contains course header elems
 function isCourseHeader(tr) {
     var courseHeader = tr.querySelectorAll("td.crsheader");
-    if (courseHeader.length === 0) {
-        return -1;
-    } else if (courseHeader.length === 3) {
-        return -1;
-    } else {
-        return 0;
-    }
+    return !(courseHeader.length <= 3);
 }
 
 // function to parse instructor name 
@@ -84,8 +80,10 @@ function getWaitlist(tds){
         return ""
     }
     else {
-        res = res.replace("FULL<br>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t \t", "")
-        return res;
+        res = res.replace("FULL<br>\n\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t\t \t", "");
+        let idx = res.indexOf("(");
+        let num = res.substring(idx + 1, res.length - 1);
+        return num;
     }
 }
 
@@ -147,10 +145,9 @@ function getHeader(table) {
     const trs = table.querySelectorAll("tr");
     let res = [];
     for (let i = 0; i < trs.length; i++) {
-        if (isCourseHeader(trs[i]) === 0) {
+        if (isCourseHeader(trs[i])) {
             json = {}
             var tds = trs[i].querySelectorAll("td.crsheader");
-
 
             json = {
                 courseDep: getDepartmentName(table),
@@ -165,18 +162,18 @@ function getHeader(table) {
 }
 
 //  get section data 
-function getSection(table) {
+function getSections(table) {
     let res = [];
     const trs = table.querySelectorAll("tr");
-    let sections = [];
-
-
+    let sections = []; // [{...}, {...}, {...}]
     for (let i = 4; i < trs.length; i++) {
-        if (isCourseHeader(trs[i]) === 0) {
+        if (isCourseHeader(trs[i])) {
             if (i !== 4) {
                 res.push(sections);
+                //console.log(sections);
             }
             sections = [];
+            //console.log("SECTIONS WERE RESET TO EMPTY");
         }
         // case 1: is a seminar, so has 10 tds
         if(isSeminar(trs[i]) === 0) {
@@ -191,6 +188,9 @@ function getSection(table) {
         }
     }
     res.push(sections);
+    if(res[0].length === 0){
+        res.splice(0,1);
+    }
     return res;
 }
 
@@ -205,11 +205,29 @@ function isLecture(tds){
 }
 
 function fromTime(time){
-    return time.substring(0, 5) + "m"; 
+    let idx = time.indexOf("-");
+    let time_str = time.substring(0, idx) + "m";
+    let colon = time_str.indexOf(":");
+    let len = time_str.length;
+    let res = {
+        hour: parseInt(time_str.substring(0, colon)), 
+        minutes: parseInt(time_str.substring(colon + 1, colon + 3)),
+        ampm: time_str.substring(len - 2, len)
+    }
+    return res;
 }
 
 function toTime(time){
-    return time.substring(6, 11) + "m";
+    let idx = time.indexOf("-");
+    let time_str = time.substring(idx + 1, time.length) + "m";
+    let colon = time_str.indexOf(":");
+    let len = time_str.length;
+    let res = {
+        hour: parseInt(time_str.substring(0, colon)), 
+        minutes: parseInt(time_str.substring(colon + 1, colon + 3)),
+        ampm: time_str.substring(len - 2, len)
+    }
+    return res;
 }
 // predicate to check if a HTML row element is a section
 function issectxt(tr) {
@@ -228,20 +246,15 @@ function td_contains_span(td){
 function isSeminar(tr){
     var row_cols = tr.querySelectorAll("td.brdr");
     if(row_cols.length === 10){
-        console.log("condition 1 passed");
         if(td_contains_span(row_cols[3])){
-            console.log("condition 2 passed");
             if(row_cols[3].querySelector('span').innerHTML === "SE"){
-                console.log("condition 3 passed");
                 return 0;
             }
             if(row_cols[3].querySelector('span').innerHTML === "IN"){
-                console.log("condition 3 passed");
                 return 0;
             }
         }
     }
-    console.log("is not seminar")
 }
 
 
@@ -256,7 +269,7 @@ function parseHTMLrowelem(tr) {
             secID: tds[4].innerHTML,
             location: tds[5].innerHTML.trim(),
             instructor: tds[6].querySelector("a").innerHTML.trim(),
-            seats: tds[7].innerHTML.trim()
+            seats: parseInt(tds[7].innerHTML.trim())
         }
     }
     else if(isLecture(tds) === 0){
@@ -264,8 +277,8 @@ function parseHTMLrowelem(tr) {
             instructionType: tds.item(3).querySelector("span").innerHTML,
             secID: tds[4].innerHTML,
             day: tds[5].innerHTML.trim(),
-            from: fromTime(tds[6].innerHTML),
-            to: toTime(tds[6].innerHTML),
+            fromTime: fromTime(tds[6].innerHTML),
+            toTime: toTime(tds[6].innerHTML),
             building: getBuilding(tds),
             room: tds[8].innerHTML.trim(),
             instructor: getInstructorName(tds),
@@ -276,14 +289,14 @@ function parseHTMLrowelem(tr) {
             instructionType: tds.item(3).querySelector("span").innerHTML,
             secID: tds[4].innerHTML,
             day: tds[5].innerHTML.trim(),
-            time: fromTime(tds[6].innerHTML),
-            to: toTime(tds[6].innerHTML),
+            fromTime: fromTime(tds[6].innerHTML),
+            toTime: toTime(tds[6].innerHTML),
             building: getBuilding(tds),
             room: tds[8].innerHTML.trim(),
             instructor: getInstructorName(tds),
-            seatsLeft: getRemainingSeats(tds),
-            waitlistcount: getWaitlist(tds),
-            capacity: getCapacity(tds)
+            seatsLeft: parseInt(getRemainingSeats(tds)),
+            waitlistcount: parseInt(getWaitlist(tds)),
+            capacity: parseInt(getCapacity(tds))
         }
     }
 
@@ -309,7 +322,7 @@ module.exports = {
     getCapacity: getCapacity,
     getUnits: getUnits,
     getHeader: getHeader,
-    getSection: getSection,
+    getSection: getSections,
     getBuilding: getBuilding,
     issectxt: issectxt,
     isSeminar: isSeminar,

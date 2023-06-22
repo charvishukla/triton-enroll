@@ -2,47 +2,65 @@ import React, { useState } from "react";
 import { db } from "./firebase";
 import { collection, addDoc } from "firebase/firestore";
 import { getFunctions, httpsCallable } from "firebase/functions";
-
-import { getdata } from './request_major';
-// const coursedata = require('./request_major.js');
-
+import { parseHtml } from "./parse_single_department.js";
+import { buildcombinedJSON } from "./request_major";
 
 function App() {
-    // the user inputs the term and department 
-    const [formState, setFormState] = useState({
-      term: "",   // ex: "WI22"
-      department: ""   // ex: "CSE"
+  const [formState, setFormState] = useState({
+    term: "", // ex: "WI22"
+    department: "", // ex: "CSE"
+  });
+
+  const handleChange = (event) => {
+    setFormState({
+      ...formState,
+      [event.target.name]: event.target.value,
     });
+  };
 
-    // not sure what this is doing ......
-    const handleChange = (event) => {
-      setFormState({
-        ...formState,
-        [event.target.name]: event.target.value,
-      });
-    }; 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      const combinedJSON = await buildcombinedJSON(
+        formState.term,
+        formState.department
+      );
+      const parsedData = parseHtml(combinedJSON);
+      console.log("Parsed data: ", parsedData);
+    } catch (error) {
+      console.log("Error fetching data: ", error);
+    }
+  };
 
-    //const data = getdata.buildcombinedJSON(formState.term, formState.department);
-    //console.log(getdata.buildcombinedJSON("WI23", "HUM"));
-    // // case where the user inputs nothing
-    // const inputEmpty = () => {
-    //   return formState.term === "" || formState.department === "";
-    // };
-
-    
-    // // add the json to DB 
-    // const add_to_database = async () =>{
-    //   if (inputEmpty()) {
-    //     window.alert("The input is empty");
-    //   }
-    //   else {
-    //     try {
-    //       // add everything to data base 
-    //     } catch (e) {
-          
-    //     }
-    //   }
-    // }
+  return (
+    <div className="App">
+      <form onSubmit={handleSubmit}>
+        <label>
+          Term:
+          <input
+            type="text"
+            name="term"
+            placeholder="WI22"
+            value={formState.term}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <label>
+          Department:
+          <input
+            type="text"
+            name="department"
+            placeholder="CSE"
+            value={formState.department}
+            onChange={handleChange}
+          />
+        </label>
+        <br />
+        <button type="submit">Fetch Data</button>
+      </form>
+    </div>
+  );
 }
 
 export default App;

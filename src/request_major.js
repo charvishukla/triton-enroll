@@ -9,7 +9,7 @@
 const axios = require('axios');
 
 const qs = require('qs');
-const fs = require('fs');
+
 const jsdom = require("jsdom");
 const {
     JSDOM
@@ -26,10 +26,10 @@ let fetchfrom = 'https://act.ucsd.edu/scheduleOfClasses/scheduleOfClassesStudent
  * 
  * Returns the first page of schedule for a given term and department 
  */
-export async function pg1_req(term, dep) {
+async function pg1_req(term, dep) {
     const data = {
         'selectedTerm': term,
-        'selectedSubjects': dep, 
+        'selectedSubjects': dep,
         '_selectedSubjects': '1',
         'schedOption1': 'true',
         '_schedOption1': 'on',
@@ -56,8 +56,7 @@ export async function pg1_req(term, dep) {
     try {
         const response = await axios.post(fetchfrom, qs.stringify(data), config);
         return response.data;
-    } 
-    catch (error) {
+    } catch (error) {
         console.error(error);
     }
 
@@ -69,14 +68,14 @@ export async function pg1_req(term, dep) {
  * - gets responses for all the pages related to a given department
  * - saves all these responses in an array
  */
-export async function allpgs_req(term, dep) {
-    // check if there are multiple pages 
-    const pg1 = await pg1_req(term, dep);
+async function allpgs_req(pg1, term, dep) {
+
+
     let dom = new JSDOM(pg1);
     // console.log(typeof(pg1));
 
     let tablesArr = dom.window.document.querySelectorAll("table");
-    console.log("Number of tables in HTML: " + tablesArr.length);
+    //console.log("Number of tables in HTML: " + tablesArr.length);
 
     if (tablesArr.length > 0) {
         let table = tablesArr[0];
@@ -85,7 +84,7 @@ export async function allpgs_req(term, dep) {
         let rx = /\(.*\)/gm;
         let arr = rx.exec(cell.trim());
         let pages = arr[0].replace('&nbsp;of&nbsp;', ' ').replace('(', '').replace(')', '').split(" ").map(str => parseInt(str))[1];
-        console.log("The number of pages is:" + pages);
+        //console.log("The number of pages is:" + pages);
 
         let response_arr = [];
         for (let i = 2; i <= pages; i++) {
@@ -102,60 +101,56 @@ export async function allpgs_req(term, dep) {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
             };
-            
+
             try {
                 const response = await axios.post(new_url, qs.stringify(data), config);
 
                 await new Promise(resolve => setTimeout(resolve, 8000));
 
                 //return response.data;
-                console.log("sent request #" +  i)
+                //console.log("sent request #" + i);
                 response_arr.push(response.data);
-            } 
-            catch (error) {
+            } catch (error) {
                 console.error(error);
             }
-            
+
         }
-        console.log(response_arr.length);
-        return response_arr;   
+        //console.log(response_arr.length);
+        return response_arr;
     }
 }
 
 
-/**
- * 
- * @param {*} term 
- * @param {*} dep 
- * @returns 
- */
-export async function buildcombinedJSON(term, dep){
-    const pg1 = await pg1_req(term, dep); // html
-    let first_page = parse.parseHtml(pg1); // parse 
+async function buildcombinedJSON(term, dep) {
+    const pg1 = await pg1_req(term, dep);
+    let first_page = parse.parseHtml(pg1);
+    const req_arr = await allpgs_req(pg1, term, dep);
+    let remaining_pages = parse.parseHtmlArr(req_arr);
+    let res = [];
+  
+    first_page.forEach(obj => {
+      res.push(obj);
+    });
+  
+    remaining_pages.forEach(page => {
+      page.forEach(obj => {
+        res.push(obj)
+      })
+    });
+  
+    // Save the data to LocalStorage
+    const resultJSONString = JSON.stringify({ "data": res }, null, 2);
+    localStorage.setItem(`combined_${term}_${dep}`, resultJSONString);
+  
+    return resultJSONString;
+  }
+  
 
-    const req_arr = await allpgs_req(term, dep); // array of htmls 
-    let remaining_pages = parse.parseHtmlArr(req_arr); // json array 
-    
-    let all = [first_page, ...remaining_pages];
+buildcombinedJSON("WI23", "CSE");
 
-    let res = {
-        dep: all
-    }
-    
-    fs.writeFileSync('test.json', JSON.stringify(res) , {
-        encoding: 'utf-8', 
-        flag: "w"
-    }); 
-
-    return res;
+module.exports = {
+    buildcombinedJSON: buildcombinedJSON,
+    allpgs_req: allpgs_req,
+    pg1_req: pg1_req
 }
 
-
-buildcombinedJSON("WI22", "CSE");
-
-
-// module.exports = {
-//     buildcombinedJSON: buildcombinedJSON, 
-//     allpgs_req: allpgs_req, 
-//     pg1_req: pg1_req
-// }
