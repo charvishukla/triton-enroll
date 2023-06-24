@@ -1,16 +1,99 @@
-@import url("https://fonts.googleapis.com");
+/* @import url("https://fonts.googleapis.com"); */
 
-body {
-  background-color: rgb(#D8EDEE);
+.body, html {
+  background-color:#D9D8EE;
 }
-
-
 .Header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 150px;
+  text-align: center;
   font-size: 48px;
   font-family: 'Source Code Pro', monospace;
+  color: #906A89;
+}
+
+.Header h1 {
+  margin-bottom: 10px;
+}
+
+.Header h2 {
+  font-size: 30px;
+  margin-top: 0px;
+  color: #464555;
+}
+
+.Header span {
+  margin-top: 0;
+  font-size: 24px;
+  color: red;
+}
+
+.Search-Wrapper form {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  margin-top: 24px;
+}
+
+.Search-Wrapper label {
+  margin-bottom: 10px;
+  font-weight: bold;
+  font-size: 20px;
+  text-align: center;
+}
+
+.Search-Wrapper select {
+  padding: 10px;
+  font-size: 16px;
+  font-family: inherit;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  margin-bottom: 10px;
+}
+
+.Search-Wrapper select:focus {
+  outline: none;
+  box-shadow: 0 0 5px #b7b7b7;
+  border-color: #b7b7b7;
+}
+
+.Search-Wrapper button[type="submit"] {
+  background-color: #464555;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  margin-top: 10px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.25s ease;
+}
+
+.Search-Wrapper button[type="submit"]:hover {
+  background-color: #464555;
+}
+
+@media screen and (max-width: 576px) {
+  .Search-Wrapper form {
+    flex-direction: column;
+  }
+
+  .Search-Wrapper label {
+    margin-bottom: 5px;
+  }
+
+  .Search-Wrapper select {
+    padding: 10px;
+  }
+
+  .Search-Wrapper button[type="submit"] {
+    margin-top: 20px;
+  }
 }

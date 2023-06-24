@@ -1,3 +1,5 @@
+import React
+ from "react";
 const CoursesTable = ({ courses }) => {
   // Check if courses.data is an array, otherwise use an empty array
   const data = courses && Array.isArray(courses.data) ? courses.data : [];
