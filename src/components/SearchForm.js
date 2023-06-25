@@ -181,6 +181,7 @@ const SearchForm = ({ onSearch }) => {
     "WCWP",
     "WES",
   ];
+  
 
   const navigate = useNavigate();
 
@@ -201,23 +202,23 @@ const SearchForm = ({ onSearch }) => {
 
   return (
     <form onSubmit={handleSubmit}>
-    <label htmlFor="department-select">Select Department:</label>
-    <input
-      type="text"
-      placeholder="Search..."
-      value={selectedOption}
-      onChange={handleSelect}
-      list="department-options"
-    />
-    <datalist id="department-options">
-      {filteredOptions.map((option, index) => (
-        <option key={index} value={option}>
-          {option}
-        </option>
-      ))}
-    </datalist>
-    <button type="submit">Search</button>
-  </form>
+      <label htmlFor="department-select">Select Department:</label>
+      <input
+        type="text"
+        placeholder="Search..."
+        value={selectedOption}
+        onChange={handleSelect}
+        list="department-options"
+      />
+      <datalist id="department-options">
+        {filteredOptions.map((option, index) => (
+          <option key={index} value={option}>
+            {option}
+          </option>
+        ))}
+      </datalist>
+      <button type="submit">Search</button>
+    </form>
   );
 };
 

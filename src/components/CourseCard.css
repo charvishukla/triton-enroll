@@ -1,0 +1,30 @@
+.course-card-container {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #ffffff;
+  }
+  
+  .other-sections {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  
+  .section-card {
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    padding: 8px;
+    background-color: aqua;
+    width: fit-content;
+  }
+
+  /* ... other style rules ... */
+
+.section-card-highlighted {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    padding: 8px;
+    background-color: aquamarine;
+  }
