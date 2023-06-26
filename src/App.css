@@ -2,37 +2,123 @@
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+html, body {
+  margin-top: 0;
+  margin-left: 0;
+  margin-right: 0;
+  background-color: #EED6D3;
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+@font-face {
+  font-family: 'Eczar';
+  src: local('Eczar'), url('./Eczar[wght].ttf') format('truetype');
+  font-weight: 400; /* Adjust this value based on the font weight your TTF file corresponds to */
+  font-style: normal;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+h1 {
+  margin-top: 220px;
+  color: #67595E;
+  font-family: 'Eczar', serif;
+  text-shadow: 2px 2px 5px #A49393;
+  font-size: 70px;
+  margin-bottom: -10px;
+}
+
+h2 {
+  color: #E8B4B8;
+  font-family: 'Eczar', serif;
+  margin-top: 5px;
+}
+
+nav {
+
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 10px 30px;
+  background-color: #67595E;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+nav a {
+  color: #EED6D3;
+  text-decoration: none;
+  padding: 0 15px;
+  font-weight: bold;
+  transition: color 0.3s ease;
+}
+
+nav a:hover {
+  color: #E8B4B8;
+}
+
+/* Add styles for the form element */
+form {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  gap: 15px;
+  margin-top: 30px;
 }
 
-.App-link {
-  color: #61dafb;
+/* Add styles for the input and select elements */
+input {
+  padding: 5px 10px;
+  font-size: 16px;
+  width: 100%;
+  max-width: 300px;
+  border: 2px solid #67595E;
+  border-radius: 5px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+input:focus {
+  outline: none;
+  border-color: #E8B4B8;
 }
+
+/* Add styles for the button element */
+button {
+  background-color: #67595E;
+  color: #EED6D3;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #E8B4B8;
+  color: #67595E;
+}
+
+
+label {
+  font-family: 'Eczar', serif;
+  font-weight: 400;
+  font-size: 18px; /* Adjust the font size to your preference */
+  color: #67595E; /* Adjust the text color to your preference */
+}
+
+.repo-button {
+  padding: 0.5rem 1rem;
+  text-decoration: none;
+  color: #fff;
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.GithubPageHead {
+  margin-top: 180px;
+  color: #67595E;
+  font-family: 'Eczar', serif;
+  text-shadow: 2px 2px 5px #A49393;
+  font-size: 55px;
+  margin-bottom: -10px;
+}
+
+

@@ -1,0 +1,21 @@
+.results-page {
+    display: flex;
+    flex-direction: row;
+    height: 100%; /* Add height to make sure the scroll works as expected */
+  }
+  
+  .left-side,
+  .right-side {
+    flex: 1; /* Make the container take 50% of the space */
+    padding: 1rem; /* Add some padding around containers */
+  }
+  
+  .left-side {
+    height: calc(100vh - 2rem); /* Make the left-side height 100% of the viewport height, minus padding */
+    overflow-y: auto; /* Make the left-side scrollable */
+  }
+  
+  .right-side {
+    /* Optional: Add a border between the left and the right side */
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+  }
