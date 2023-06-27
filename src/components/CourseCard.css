@@ -7,7 +7,7 @@
 }
 
 .course-card-container {
-  margin: 1rem 0;
+  margin: 1rem 0 3rem;
   border: 1px solid  #A49393;
   padding: 1rem;
   border-radius: 5px; /* Add border-radius property */
@@ -43,25 +43,38 @@ h2 {
   font-family: 'Eczar', serif;
 }
 
-.section-card p {
-  margin: 0;
-  font-family: 'Eczar', serif;
-}
-
 .discussion-sections {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(45%, 1fr)); /* Add grid styles to create two columns */
+  grid-gap: 10px;
   margin-top: 1rem;
 }
 
 .discussion-sections h3 {
   margin: 0;
   font-family: 'Eczar', serif;
+  grid-column: 1 / -1; /* Make the heading span 2 columns */
 }
 
-.discussion-sections .section-card {
-  margin-bottom: 0.5rem;
+.section-card {
+  margin: 3px; 
+  background-color: #A49393;
+  color: #fff;
+  font-family: 'Eczar', serif;
+  border-radius: 5px;
+  box-shadow: 0 2px 4px #67595E;
+  transition: box-shadow 0.2s ease-in-out;
+  cursor: pointer;
+  padding: 1rem;
+  grid-column: span 1; /* Set the default grid column span */
+  grid-row: span 1; /* Set the default grid row span */
 }
 
-.discussion-sections .section-card:hover {
-  box-shadow: none;
-  background-color: #67595E;
+@media screen and (min-width: 768px) {
+  .discussion-sections {
+    grid-template-columns: repeat(2, minmax(0, 1fr)); /* Make it 2 columns on larger screens */
+  }
+  .section-card:first-child {
+    grid-column: span 2; /* Make the lecture card span 2 columns */
+  }
 }

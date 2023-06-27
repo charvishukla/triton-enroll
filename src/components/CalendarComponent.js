@@ -13,9 +13,9 @@ const downloadICS = (events) => {
     const vevent = new ICAL.Component('vevent');
     vevent.addPropertyWithValue('dtstart', ICAL.Time.fromJSDate(event.start));
     vevent.addPropertyWithValue('dtend', ICAL.Time.fromJSDate(event.end));
-    vevent.addPropertyWithValue('summary', event.summary);
-    vevent.addPropertyWithValue('description', event.description);
-    vevent.addPropertyWithValue('location', event.location);
+    vevent.addPropertyWithValue('summary', event.title);
+    // vevent.addPropertyWithValue('description', event.description);
+    // vevent.addPropertyWithValue('location', event.location);
 
     calendar.addSubcomponent(vevent);
   });
@@ -43,7 +43,7 @@ const CalendarComponent = ({ events }) => {
         startAccessor="start"
         endAccessor="end"
         style={{
-          height: 500,
+          height: 800,
         }}
         defaultView={Views.WEEK}
         views={{
