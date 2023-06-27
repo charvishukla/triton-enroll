@@ -1,5 +1,6 @@
 import React from 'react';
 import econCollection from './econCollection.png';
+import metricimg from './metrics.png';
 
 const AboutPage = () => {
 
@@ -61,7 +62,8 @@ const AboutPage = () => {
       </p>
       <p style={aboutParagraphStyle}>
         Here are the metrics from populating the database once (i.e., for the first time):
-        {/* include graphic */}
+        <img style={imageStyle} src={metricimg} alt="metric" />
+
       </p>
 
       <h2 style={subheadingStyle} >Tech Stack</h2>
@@ -94,7 +96,6 @@ const AboutPage = () => {
         <li>CSS modules</li>
         <li>Random website where I found this cool font from:</li>
       </ul>
-
       <h3>Hosting</h3>
       <ul style={ulStyle}>
         <li>Vercel</li>
