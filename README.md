@@ -1,4 +1,12 @@
 # Triton Enroll 
+## Table of Contents
+1. What does the Application do?
+2. Limitations (And potential improvements)
+3. Tech Stack
+4. Database Structure
+5. Parser
+6. How to Run
+7. About me 
 
 ## What does the Application do?
 It is often tedious to add recurring events to calendar for all your classes. The purpose of Triton-enroll is to save your precious time, and helpy you be organized in college!
