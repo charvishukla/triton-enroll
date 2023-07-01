@@ -1,70 +1,134 @@
-# Getting Started with Create React App
+# Triton Enroll 
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## What does the Application do?
+It is often tedious to add recurring events to calendar for all your classes. The purpose of Triton-enroll is to save your precious time, and helpy you be organized in college!
 
-## Available Scripts
+This web application allows you to visualize, and then subsequently download a your schedule really easily. Curently, it only creates .ics files available for download on Mac. The app is more user friendly, does not require SSO login, and (I argue) has better UI than Webreg. This website will also tell you the current waitlist counts, so if you have not enrolled already, you can access information about total/available seats in a given course. 
 
-In the project directory, you can run:
+Find the backend for the project [here](https://github.com/charvishukla/course-scraper). 
 
-### `npm start`
+---
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+## Limitations (And potential improvements)
+Since the schedule of classes comes out half-way through the quarter, I update the database with new courses. I get limited storage in the free plan, which is why I am not able to populate my database with data from all possible quarters!
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Here are the metrics from populating the database once (i.e. for the first time):
+    ![image](./src/components/metrics.png)
 
-### `npm test`
+---
+		
+## Tech Stack:
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+### Backend:
+- Firebase Firestore DB (see Database Structure)
+	- Client-side SDK
+	- Admin SDK 
+- Firebase cloud functions
+- Express 
+- cors 
+- date-fns 
+- Axios 
+- ical.js
+- Wrote my own parser (see parser section)
 
-### `npm run build`
+### Frontend:
+- React (via CRA)
+	- React Big Calendar  
+	- React DOM 
+	- React router dom 
+- CSS 
+- CSS modules
+- Random website where I found this cool font from: 
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Other:
+- Chalk (Color Coding print statements is game changing)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+---
 
-### `npm run eject`
+## Database Structure:
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+This is the general structure:
+```
+    DepartmentCollection1 
+	CourseDocument1
+		name 
+		units 
+		code 
+		Section SubCollection1 (Lecture)
+			section name 
+			instructor 
+			from 
+			to 
+			location 
+			waitlist
+			totalSeats
+		Section SubCollection2 (Discussion 1)
+			section name 
+			instructor 
+			from 
+			to 
+			location 
+			waitlist
+			totalSeats
+		Section SubCollection3 (Discussion 2)
+			. . . 
+	CourseDocument2
+	CourseDocument3
+	.
+	.
+	.
+DepartmentCollection2
+DepartmentCollection3
+DepartmentCollection4
+	. . . 
+	. . .
+	. . .
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+Here is what it looks like inside the project:
+    ![example](./src/components/econCollection.png)
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+---
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+## Parser:
 
-## Learn More
+This was *the* hardest part about this project. While I was trying to fetch course data from {insert link to schedule of classes}, I realised that upon sending an POST request to UCSD's server, the response is a whole entire (poorly formatted) html page. Moreover, all the course data for a given major is not available on a singular page (rip). The website sends a GET request to fetch the next page.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+I wrote two scripts in JavaScript (no, I was not able to use existing libraries to parse HTML files) to parse the HTML files to extract relevant data. And yes, this involved using getting elements by classNames, ids, iterating through 'tr' and 'td' objects in the in tables, and even using regular expressions to parse strings!
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+---
 
-### Code Splitting
+## How to Run 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+To run the frontend, clone this repository using the following command:
 
-### Analyzing the Bundle Size
+```
+$ git clone https://github.com/charvishukla/triton-enroll.git triton-enroll
+```
+This will save the project locally as `triton-enroll`. Now, navigate to the project directory and run yhe following command 
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+```
+$ npm start 
+```
 
-### Making a Progressive Web App
+You should be able to see the frontend working on `http://localhost:3001/`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-### Advanced Configuration
+Next, we will start the server. Since the backend is in a separate repository, you will have to clone the repository using the following command:
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+```
+$ git clone https://github.com/charvishukla/course-scraper course-scraper
 
-### Deployment
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+This will start the server on `http://localhost:3002/`. Now, the frontend and the backend will be able to communicate, and the app should work perfectly! 
 
-### `npm run build` fails to minify
+---
+## About me :
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+	Website: www.charvishukla.github.io
+	Email: cshukla at ucsd dot edu 
+
+Thanks for reading! Here's a pup picture to make your day! 
+![pup](./src/pup.jpeg)
